@@ -1,13 +1,15 @@
 import React from "react";
 import { Search } from "lucide-react";
 
-const SearchBar = () => {
+const SearchBar = ({ value, onChange, placeholder = "Search", onSubmit }) => {
   return (
     <div className="relative">
-      <form action="/search">
+      <form onSubmit={onSubmit} className="flex items-center">
         <input
           type="text"
-          placeholder="Search"
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
           name="query"
           className="w-full py-3 px-4 pl-12 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
         />

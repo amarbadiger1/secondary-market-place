@@ -33,6 +33,7 @@ export default defineSchema({
   }),
 
   transactions: defineTable({
+    transactionType: v.string(),
     eventId: v.id("events"), // Event ID for which the ticket is being bought/sold
     ticketId: v.number(), // Index of the ticket type in the event's tickets array
     buyerId: v.id("users"), // User ID of the buyer

@@ -34,15 +34,6 @@ const CreateEvent = () => {
   ]);
   const [eventPic, setEventPic] = useState(null);
 
-  if (!user) {
-    return (
-      <div className="fixed inset-0 flex justify-center items-center bg-black/50 ">
-        {/* Clerk's SignIn modal */}
-        <SignIn mode="modal" />
-      </div>
-    );
-  }
-
   const { id } = user;
 
   const onFinish = async (e) => {
@@ -107,6 +98,11 @@ const CreateEvent = () => {
     ]);
   };
 
+  const removeSchedule = (index) => {
+    const updatedSchedules = schedules.filter((_, i) => i !== index);
+    setSchedules(updatedSchedules);
+  };
+
   const addTicket = (scheduleIndex) => {
     const updatedSchedules = [...schedules];
     updatedSchedules[scheduleIndex].tickets.push({
@@ -114,6 +110,14 @@ const CreateEvent = () => {
       price: "",
       totalQuantity: "",
     });
+    setSchedules(updatedSchedules);
+  };
+
+  const removeTicket = (scheduleIndex, ticketIndex) => {
+    const updatedSchedules = [...schedules];
+    updatedSchedules[scheduleIndex].tickets = updatedSchedules[
+      scheduleIndex
+    ].tickets.filter((_, i) => i !== ticketIndex);
     setSchedules(updatedSchedules);
   };
 
@@ -309,6 +313,13 @@ const CreateEvent = () => {
                       />
                     </div>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => removeTicket(scheduleIndex, ticketIndex)}
+                    className="px-2 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                  >
+                    Remove Ticket
+                  </button>
                 </div>
               ))}
               <button
@@ -317,6 +328,14 @@ const CreateEvent = () => {
                 className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
               >
                 Add Ticket
+              </button>
+
+              <button
+                type="button"
+                onClick={() => removeSchedule(scheduleIndex)}
+                className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Remove Schedule
               </button>
             </div>
           ))}

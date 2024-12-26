@@ -1,67 +1,33 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import SearchBar from "../components/SearchBar"; // Assuming you have a SearchBar component
-import TicketCard from "../components/TicketCard"; // Component to display individual ticket
+import React from "react";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import TicketCard from "../components/TicketCard";
 
 const SellTicketPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [tickets, setTickets] = useState([
-    // Dummy data for the sake of illustration
-    {
-      id: 1,
-      name: "Concert A",
-      price: "$50",
-      // imageUrl: "https://via.placeholder.com/300", // Remove the imageUrl here
-    },
-    {
-      id: 2,
-      name: "Event B",
-      price: "$40",
-      // imageUrl: "https://via.placeholder.com/300", // Remove the imageUrl here
-    },
-    {
-      id: 3,
-      name: "Show C",
-      price: "$30",
-      // imageUrl: "https://via.placeholder.com/300", // Remove the imageUrl here
-    },
-    // More tickets...
-  ]);
+  // Fetch events using React Query
+  const events = useQuery(api.events.getAllEventsWithDetails);
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const filteredTickets = tickets.filter((ticket) =>
-    ticket.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // Filter upcoming events (events that have not happened yet)
+  const upcomingEvents = events?.filter(
+    (event) => new Date(event.schedules[0].date) > Date.now() // Using the first schedule's date
   );
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-        Sell Your Ticket
+        Sell Your Event To Sell Ticket
       </h2>
 
-      {/* Search Bar */}
+      {/* Search Bar (for demo, not functional) */}
       <div className="flex justify-center mb-8">
-        <div className="w-full sm:w-2/3 md:w-1/2 lg:w-1/2">
-          <SearchBar value={searchQuery} onChange={handleSearchChange} />
-        </div>
+        <div className="w-full sm:w-2/3 md:w-1/2 lg:w-1/2">search</div>
       </div>
 
       {/* Ticket List */}
       <div className="space-y-6">
-        {filteredTickets.length === 0 ? (
-          <p className="text-gray-500 text-center">No tickets found</p>
-        ) : (
-          filteredTickets.map((ticket) => (
-            // <Link to={`/sell/${ticket.id}`} key={ticket.id}>
-            //   <TicketCard ticket={ticket} />{" "}
-            //   {/* TicketCard will no longer expect an imageUrl */}
-            // </Link>
-            <TicketCard ticket={ticket} />
-          ))
-        )}
+        {upcomingEvents?.map((event) => (
+          <TicketCard key={event._id} eventId={event._id} />
+        ))}
       </div>
     </div>
   );
